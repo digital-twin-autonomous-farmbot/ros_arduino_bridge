@@ -1,46 +1,40 @@
-#include <Servo.h>
+#include "servos.h"
 
-class SweepServo {
-  private:
-    Servo servo;
-    int targetPosition;
-    int currentPosition;
-    int stepDelay;
-    unsigned long lastUpdate;
+// Servo-Array und Einstellungen
+SweepServo servos[N_SERVOS];
+byte servoPins[N_SERVOS] = {10};           // SERVO_PIN
+int stepDelay[N_SERVOS] = {20};            // Delay in ms
+byte servoInitPosition[N_SERVOS] = {90};   // Startposition
 
-  public:
-    SweepServo() : targetPosition(90), currentPosition(90), stepDelay(20), lastUpdate(0) {}
+// Konstruktor
+SweepServo::SweepServo() {
+  targetPosition = 90;
+  currentPosition = 90;
+  stepDelay = 20;
+  lastUpdate = 0;
+}
 
-    void initServo(int pin, int step_delay, int start_pos) {
-      stepDelay = step_delay;
-      targetPosition = start_pos;
-      currentPosition = start_pos;
-      servo.attach(pin);
-      servo.write(currentPosition);
-    }
+void SweepServo::initServo(int pin, int delay, int start_pos) {
+  stepDelay = delay;
+  targetPosition = start_pos;
+  currentPosition = start_pos;
+  servo.attach(pin);
+  servo.write(currentPosition);
+}
 
-    void setTargetPosition(int angle) {
-      targetPosition = constrain(angle, 45, 135);
-    }
+void SweepServo::setTargetPosition(int angle) {
+  targetPosition = constrain(angle, 45, 135);
+}
 
-    Servo& getServo() {
-      return servo;
-    }
+Servo& SweepServo::getServo() {
+  return servo;
+}
 
-    void doSweep() {
-      if (millis() - lastUpdate > stepDelay) {
-        if (currentPosition < targetPosition) currentPosition++;
-        else if (currentPosition > targetPosition) currentPosition--;
-        servo.write(currentPosition);
-        lastUpdate = millis();
-      }
-    }
-};
-
-// Nur ein Servo für Lenkung
-SweepServo servos[1];
-
-// Default-Werte (wie in ROSArduinoBridge erwartet)
-const int servoPins[] = {10};           // SERVO_PIN
-const int stepDelay[] = {20};           // Delay in ms
-const int servoInitPosition[] = {90};   // Startposition
+void SweepServo::doSweep() {
+  if (millis() - lastUpdate > stepDelay) {
+    if (currentPosition < targetPosition) currentPosition++;
+    else if (currentPosition > targetPosition) currentPosition--;
+    servo.write(currentPosition);
+    lastUpdate = millis();
+  }
+}

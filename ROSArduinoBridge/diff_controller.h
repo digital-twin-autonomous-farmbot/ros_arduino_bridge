@@ -55,13 +55,6 @@ void resetPID(){
    leftPID.output = 0;
    leftPID.PrevInput = 0;
    leftPID.ITerm = 0;
-
-   rightPID.TargetTicksPerFrame = 0.0;
-   rightPID.Encoder = readEncoder(RIGHT);
-   rightPID.PrevEnc = rightPID.Encoder;
-   rightPID.output = 0;
-   rightPID.PrevInput = 0;
-   rightPID.ITerm = 0;
 }
 
 /* PID routine to compute the next motor commands */
@@ -106,7 +99,6 @@ void doPID(SetPointInfo * p) {
 void updatePID() {
   /* Read the encoders */
   leftPID.Encoder = readEncoder(LEFT);
-  rightPID.Encoder = readEncoder(RIGHT);
   
   /* If we're not moving there is nothing more to do */
   if (!moving){
@@ -116,15 +108,14 @@ void updatePID() {
     * PrevInput is considered a good proxy to detect
     * whether reset has already happened
     */
-    if (leftPID.PrevInput != 0 || rightPID.PrevInput != 0) resetPID();
+    if (leftPID.PrevInput != 0) resetPID();
     return;
   }
 
   /* Compute PID update for each motor */
-  doPID(&rightPID);
   doPID(&leftPID);
 
   /* Set the motor speeds accordingly */
-  setMotorSpeeds(leftPID.output, rightPID.output);
+  setMotorSpeeds(leftPID.output);
 }
 
