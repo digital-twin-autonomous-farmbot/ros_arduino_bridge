@@ -1,44 +1,36 @@
-/***************************************************************
-   Motor driver for single-motor L298N setup (LEFT only)
-***************************************************************/
-
 #ifdef USE_BASE
-#ifdef L298_MOTOR_DRIVER
 
-#define LEFT_MOTOR_ENABLE    5
-#define LEFT_MOTOR_FORWARD   4
-#define LEFT_MOTOR_BACKWARD  3
+#define MOTOR_IN1_PIN 4  // Richtungspin 1
+#define MOTOR_IN2_PIN 3  // Richtungspin 2
 
 void initMotorController() {
-  pinMode(LEFT_MOTOR_ENABLE, OUTPUT);
-  pinMode(LEFT_MOTOR_FORWARD, OUTPUT);
-  pinMode(LEFT_MOTOR_BACKWARD, OUTPUT);
-  digitalWrite(LEFT_MOTOR_ENABLE, HIGH);  // enable motor
+  pinMode(MOTOR_IN1_PIN, OUTPUT);
+  pinMode(MOTOR_IN2_PIN, OUTPUT);
+
+  // Initialzustand: gestoppt
+  digitalWrite(MOTOR_IN1_PIN, LOW);
+  digitalWrite(MOTOR_IN2_PIN, LOW);
 }
 
 void setMotorSpeed(int speed) {
-  unsigned char reverse = 0;
-
-  if (speed < 0) {
-    speed = -speed;
-    reverse = 1;
-  }
-  if (speed > 255)
-    speed = 255;
-
-  if (reverse == 0) {
-    analogWrite(LEFT_MOTOR_FORWARD, speed);
-    analogWrite(LEFT_MOTOR_BACKWARD, 0);
+  if (speed == 0) {
+    // Motor stoppen
+    digitalWrite(MOTOR_IN1_PIN, LOW);
+    digitalWrite(MOTOR_IN2_PIN, LOW);
+  } else if (speed > 0) {
+    // Vorwärts
+    digitalWrite(MOTOR_IN1_PIN, HIGH);
+    digitalWrite(MOTOR_IN2_PIN, LOW);
   } else {
-    analogWrite(LEFT_MOTOR_BACKWARD, speed);
-    analogWrite(LEFT_MOTOR_FORWARD, 0);
+    // Rückwärts
+    digitalWrite(MOTOR_IN1_PIN, LOW);
+    digitalWrite(MOTOR_IN2_PIN, HIGH);
   }
 }
 
-// This matches the interface expected by ROSArduinoBridge
+// ROSArduinoBridge-kompatibler Wrapper
 void setMotorSpeeds(int speed) {
-  setMotorSpeed(speed);  // only one motor (LEFT)
+  setMotorSpeed(speed);
 }
 
-#endif
 #endif
