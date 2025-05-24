@@ -2,6 +2,7 @@
 
 #define MOTOR_IN1_PIN 4  // Richtungspin 1
 #define MOTOR_IN2_PIN 3  // Richtungspin 2
+#define MOTOR_PWM_PIN 5  // PWM für Geschwindigkeit (ENA)
 
 void initMotorController() {
   pinMode(MOTOR_IN1_PIN, OUTPUT);
@@ -21,6 +22,7 @@ void setMotorSpeed(int speed) {
     // Vorwärts
     digitalWrite(MOTOR_IN1_PIN, HIGH);
     digitalWrite(MOTOR_IN2_PIN, LOW);
+
   } else {
     // Rückwärts
     digitalWrite(MOTOR_IN1_PIN, LOW);

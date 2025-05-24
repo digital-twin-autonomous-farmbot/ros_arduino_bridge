@@ -178,7 +178,10 @@ int runCommand() {
     }
     else moving = 1;
     leftPID.TargetTicksPerFrame = arg1; // Only using left motor for drive
-    Serial.println("OK"); 
+    Serial.println("OK m ");
+    analogWrite( 5 , arg1);
+    Serial.println(arg1); 
+
     break;
   case MOTOR_RAW_PWM:
     /* Reset the auto stop timer */
@@ -186,7 +189,7 @@ int runCommand() {
     resetPID();
     moving = 0; // Sneaky way to temporarily disable the PID
     setMotorSpeeds(arg1); // Only using left motor for drive
-    Serial.println("OK"); 
+    Serial.println("OK arg1"); 
     break;
   case UPDATE_PID:
     while ((str = strtok_r(p, ":", &p)) != '\0') {
